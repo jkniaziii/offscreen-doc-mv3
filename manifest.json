@@ -9,5 +9,5 @@
     "default_title": "Offscreen Example",
     "default_popup": "popup.html"
   },
-  "permissions": ["offscreen"]
+  "permissions": ["offscreen", "storage"]
 }

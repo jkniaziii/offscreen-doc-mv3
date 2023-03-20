@@ -3,34 +3,60 @@ chrome.runtime.onMessage.addListener((msg) => {
     return;
   }
   switch (msg.type) {
-    case "play":
-      playAudio(msg.play);
+    case "start":
+      startRecording(msg.storage);
       break;
-    case "pause":
-      pauseAudio();
+    case "stop":
+      stopRecording();
       break;
   }
 });
 
-const audio = document.querySelector("audio");
+let mediaRecorder;
 
-function playAudio(play) {
-  const currSource = audio?.src?.split("/") || [];
-  const currentSource = currSource.pop();
+async function recordScreen() {
+  const stream = await navigator.mediaDevices.getDisplayMedia({
+    video: true,
+    audio: true
+  });
+  mediaRecorder = new MediaRecorder(stream, {
+    mimeType: 'video/webm;codecs=vp9',
+    ignoreMutedMedia: true
+  });
+  recordedChunks = [];
+  mediaRecorder.ondataavailable = e => {
+    if (e.data.size > 0) {
+      recordedChunks.push(e.data);
+    }
+  };
+  mediaRecorder.start();
+}
 
-  const { source, volume } = play;
-  const file = source || "sound.mp3";
-
-  if (audio.paused && currentSource === file) {
-    audio.play();
-  } else {
-    audio.src = file;
-    audio.volume = volume;
-
-    audio.play();
+function startRecording() {
+  try {
+    recordScreen();
+  } catch (error) {
+    alert(error)
   }
 }
 
-function pauseAudio() {
-  audio.pause();
+function stopRecording() {
+  try {
+
+    mediaRecorder.stop();
+    setTimeout(() => {
+      const blob = new Blob(recordedChunks, {
+        type: "video/webm"
+      });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "recording.webm";
+      a.click();
+      URL.revokeObjectURL(url);
+    }, 0);
+
+  } catch (error) {
+    alert(error)
+  }
 }

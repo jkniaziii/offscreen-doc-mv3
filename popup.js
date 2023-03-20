@@ -1,10 +1,7 @@
-document.querySelector(".play").addEventListener("click", () => {
-  chrome.runtime.sendMessage({
-    type: "play",
-    play: { source: "sound.mp3", volume: 1 },
-  });
+document.querySelector(".start").addEventListener("click", () => {
+  chrome.runtime.sendMessage({ type: "start" });
 });
 
-document.querySelector(".pause").addEventListener("click", () => {
-  chrome.runtime.sendMessage({ type: "pause" });
+document.querySelector(".stop").addEventListener("click", () => {
+  chrome.runtime.sendMessage({ type: "stop" });
 });

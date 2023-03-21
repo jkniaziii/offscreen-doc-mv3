@@ -1,7 +1,7 @@
 (async () => {
   if (await chrome.offscreen.hasDocument()) return;
   await chrome.offscreen.createDocument({
-    url: "offscreen.html",
+    url: "../html/offscreen.html",
     reasons: ["AUDIO_PLAYBACK"],
     justification: "testing",
   });

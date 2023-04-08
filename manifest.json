@@ -1,10 +1,29 @@
 {
-  "name": "Offscreen Example",
+  "name": "Simple Screen Recording",
   "manifest_version": 3,
+  "minimum_chrome_version": "88",
   "version": "0.1",
   "background": {
     "service_worker": "js/worker.js"
   },
+  "content_scripts": [
+    {
+      "matches": [
+        "<all_urls>"
+      ],
+      "js": [
+        "js/content.js"
+      ],
+      "css": ["css/content.css"],
+      "run_at": "document_idle"
+    }
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": ["js/content.js", "css/content.css", "html/offscreen.html", "js/offscreen.js"],
+      "matches": ["<all_urls>"]
+    }
+  ],
   "action": {
     "default_title": "Offscreen Example",
     "default_popup": "html/popup.html"
@@ -13,5 +32,13 @@
     "16": "images/logo16.png",
     "128": "images/logo128.png"
   },
-  "permissions": ["offscreen", "storage"]
+  "permissions": [
+    "offscreen",
+    "storage",
+    "activeTab",
+    "scripting",
+    "tabs",
+    "activeTab"
+  ],
+  "host_permissions": ["<all_urls>"]
 }

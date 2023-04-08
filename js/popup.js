@@ -1,7 +1,11 @@
-document.querySelector(".start").addEventListener("click", () => {
+const startButton = document.querySelector(".start");
+const stopButton = document.querySelector(".stop");
+
+
+startButton.addEventListener("click", () => {
   chrome.runtime.sendMessage({ type: "start" });
 });
 
-document.querySelector(".stop").addEventListener("click", () => {
-  chrome.runtime.sendMessage({ type: "stop" });
-});
+// stopButton.addEventListener("click", () => {
+//   chrome.runtime.sendMessage({ type: "stop" });
+// });

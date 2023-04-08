@@ -1,0 +1,23 @@
+.stop-recording {
+    width: 40px;
+    height: 200px;
+    border-radius: 8px;
+    border: 1px solid #e6f2f3;
+    color: red;
+    font-weight: bold;
+    background: #f0f8ff;
+    position: fixed;
+    z-index: 999;
+    top: 50%;
+    left: 0;
+    transform: translateY(-50%);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    }
+    
+    .stop-recording span {
+    writing-mode: vertical-rl;
+    transform: rotate(180deg);
+    }

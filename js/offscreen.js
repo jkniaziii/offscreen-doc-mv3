@@ -32,7 +32,7 @@ async function recordScreen() {
     }
   };
   mediaRecorder.start();
-  return injectContent();
+  return chrome.runtime.sendMessage({ type: "inject-content" });;
 }
 
 function startRecording() {
@@ -43,25 +43,21 @@ function startRecording() {
   }
 }
 
-
-function injectContent() {
-  chrome.runtime.sendMessage({ type: "inject-content", recording: mediaRecorder?.state == 'recording' });
-}
-
 function stopRecording() {
   try {
-    mediaRecorder.stop();
-    injectContent();
-    setTimeout(() => {
-      const blob = new Blob(recordedChunks, { type: "video/webm" });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = "recording.webm";
-      a.click();
-      URL.revokeObjectURL(url);
-    }, 0);
-
+    if (mediaRecorder.state === 'recording') {
+      mediaRecorder.stop();
+      chrome.runtime.sendMessage({ type: "remove-content" });
+      setTimeout(() => {
+        const blob = new Blob(recordedChunks, { type: "video/webm" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = "recording.webm";
+        a.click();
+        URL.revokeObjectURL(url);
+      }, 0);
+    }
   } catch (error) {
     alert(error)
   }

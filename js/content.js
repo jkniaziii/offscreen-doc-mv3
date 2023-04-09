@@ -1,12 +1,13 @@
 const stopButton = document.createElement("button");
-let counter = 0;
 
-function updateCounter() {
-    counter++;
-    stopButton.innerHTML = `<button class="stop-recording"><span>Stop ${counter}</span></button>`;
+
+function updateCounter(counter) {
+  console.log({ counter })
+  stopButton.innerHTML = `<button class="stop-recording"><span>Stop ${counter}</span></button>`;
 }
 
 function injectContent(recording) {
+  console.log({ recording })
   recording ? document.body.appendChild(stopButton) : stopButton.remove();
 }
 
@@ -15,13 +16,13 @@ stopButton.addEventListener('click', () => {
 })
 
 chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
+  console.log("msg.type :", msg.type);
   switch (msg.type) {
     case "inject-content":
-      injectContent(true);
-      setInterval(updateCounter, 1000); // increment counter every second
-      break;
+      return injectContent(true);
+    case "timer-tick":
+      return updateCounter(msg.time);
     case "remove-content":
-      injectContent(false);
-      break;
+      return injectContent(false);
   }
 });

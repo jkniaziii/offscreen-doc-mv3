@@ -7,16 +7,16 @@ chrome.runtime.onMessage.addListener((msg) => {
       startRecording();
       break;
     case "stop":
-      stopRecording();
+      mediaRecorder.stop();
       break;
   }
 });
 
 let mediaRecorder;
+let stream;
 
 async function recordScreen() {
-  console.log("mediaRecorder 1 :", mediaRecorder);
-  const stream = await navigator.mediaDevices.getDisplayMedia({
+   stream = await navigator.mediaDevices.getDisplayMedia({
     video: true,
     audio: true
   });
@@ -32,6 +32,11 @@ async function recordScreen() {
     }
   };
   mediaRecorder.start();
+  setTimeout(() => {
+    mediaRecorder.onstop = () => {
+      stopRecording();
+    }
+  }, 0);
   return chrome.runtime.sendMessage({ type: "inject-content" });;
 }
 
@@ -43,12 +48,17 @@ function startRecording() {
   }
 }
 
+// setInterval(() => {
+//   console.log({stream})
+// }, 1000);
+
+
 function stopRecording() {
   try {
-    if (mediaRecorder.state === 'recording') {
-      mediaRecorder.stop();
       chrome.runtime.sendMessage({ type: "remove-content" });
+      stream.getTracks().forEach(track => track.stop());
       setTimeout(() => {
+        console.log({recordedChunks})
         const blob = new Blob(recordedChunks, { type: "video/webm" });
         const url = URL.createObjectURL(blob);
         const a = document.createElement("a");
@@ -57,7 +67,7 @@ function stopRecording() {
         a.click();
         URL.revokeObjectURL(url);
       }, 0);
-    }
+   
   } catch (error) {
     alert(error)
   }
